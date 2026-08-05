@@ -1,0 +1,1 @@
+{"schema":"kaiwu.event/v1","id":"evt-example-001","type":"execution.completed","status":"completed","title":"Example Quest completed","summary":"Replace this fixture with events emitted by your Harness bridge.","project_slug":"kaiwu-demo","occurred_at":"2026-08-05T09:00:00+08:00","payload":{"dispatch_id":"example-dispatch-id"}}
