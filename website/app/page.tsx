@@ -80,9 +80,12 @@ export default function Home() {
             Open source · v0.1.1
           </div>
           <h1>
-            让 Agent 执行，
-            <br />
-            让人保留决定权。
+            <span className="headline-line">
+              让 <span lang="en">Agent</span> 执行，
+            </span>
+            <span className="headline-line">
+              把 <strong>决定权</strong> 留给人。
+            </span>
           </h1>
           <p className="hero-en">
             Let agents execute. Keep humans in control.
