@@ -1,0 +1,53 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/e29denghy/kaiwu/schemas/kaiwu-event-v1.schema.json",
+    "title": "KAIWU Harness Event v1",
+    "description": "A normalized event written by a Harness or bridge to a KAIWU JSONL Inbox.",
+    "type": "object",
+    "required": [
+        "schema",
+        "id",
+        "type",
+        "title",
+        "occurred_at"
+    ],
+    "properties": {
+        "schema": {
+            "const": "kaiwu.event/v1"
+        },
+        "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+        },
+        "type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+        },
+        "status": {
+            "type": ["string", "null"],
+            "maxLength": 255
+        },
+        "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+        },
+        "summary": {
+            "type": ["string", "null"]
+        },
+        "project_slug": {
+            "type": ["string", "null"],
+            "maxLength": 255
+        },
+        "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "payload": {
+            "type": ["object", "null"]
+        }
+    },
+    "additionalProperties": true
+}

@@ -1,0 +1,29 @@
+{
+    "schema": "kaiwu.quest/v1",
+    "id": "7fb9c8df-1d08-4eb0-8685-5738c5fb6894",
+    "quest_id": 12,
+    "attempt": 1,
+    "title": "Validate adapter protocol",
+    "goal": "Prove that the adapter emits a conforming event without deploying changes.",
+    "project": {
+        "id": 1,
+        "name": "KAIWU Demo",
+        "slug": "kaiwu-demo"
+    },
+    "acceptance_criteria": [
+        "The emitted event conforms to kaiwu.event/v1"
+    ],
+    "constraints": [
+        "Do not deploy"
+    ],
+    "verification": [
+        "Run php artisan harness:validate on the event Inbox"
+    ],
+    "risk_level": "low",
+    "requires_write": false,
+    "approval": {
+        "status": "approved",
+        "approved_at": "2026-08-10T09:55:00+08:00"
+    },
+    "created_at": "2026-08-10T10:00:00+08:00"
+}

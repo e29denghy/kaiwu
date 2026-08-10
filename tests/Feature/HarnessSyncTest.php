@@ -43,6 +43,7 @@ class HarnessSyncTest extends TestCase
         $inbox = $this->directory.'/events.jsonl';
         file_put_contents($inbox, implode("\n", [
             json_encode([
+                'schema' => 'kaiwu.event/v1',
                 'id' => 'evt-001',
                 'type' => 'execution.completed',
                 'status' => 'completed',

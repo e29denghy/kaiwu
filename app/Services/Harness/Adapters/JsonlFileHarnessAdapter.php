@@ -6,6 +6,7 @@ use App\Models\HarnessConnection;
 use App\Models\HarnessEvent;
 use App\Models\Project;
 use App\Services\Harness\Contracts\HarnessAdapter;
+use App\Services\Harness\HarnessProtocolValidator;
 use App\Services\Harness\HarnessSyncResult;
 use Illuminate\Support\Carbon;
 use RuntimeException;
@@ -14,6 +15,8 @@ use Throwable;
 
 class JsonlFileHarnessAdapter implements HarnessAdapter
 {
+    public function __construct(private readonly HarnessProtocolValidator $validator) {}
+
     public function sync(HarnessConnection $connection): HarnessSyncResult
     {
         $path = trim((string) ($connection->configuration['inbox_path'] ?? ''));
@@ -37,7 +40,7 @@ class JsonlFileHarnessAdapter implements HarnessAdapter
 
             try {
                 $payload = json_decode($line, true, 512, JSON_THROW_ON_ERROR);
-                $this->validatePayload($payload);
+                $this->validator->validate($payload, HarnessProtocolValidator::EVENT_SCHEMA);
                 $projectSlug = trim((string) ($payload['project_slug'] ?? ''));
                 $projectId = $projectSlug === ''
                     ? null
@@ -71,18 +74,5 @@ class JsonlFileHarnessAdapter implements HarnessAdapter
         }
 
         return new HarnessSyncResult($created, $updated, $skipped, $errors);
-    }
-
-    private function validatePayload(mixed $payload): void
-    {
-        if (! is_array($payload)) {
-            throw new RuntimeException('event 必须是 JSON object');
-        }
-
-        foreach (['id', 'type', 'title', 'occurred_at'] as $field) {
-            if (! isset($payload[$field]) || trim((string) $payload[$field]) === '') {
-                throw new RuntimeException("缺少必填字段 {$field}");
-            }
-        }
     }
 }
