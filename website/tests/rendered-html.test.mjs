@@ -38,7 +38,8 @@ test("server-renders the KAIWU bilingual landing page", async () => {
     html,
     /<title>开物 KAIWU — Human-approved Agent Harness Workbench<\/title>/i,
   );
-  assert.match(html, /让 Agent 执行/);
+  assert.match(html, /让\s*<span lang="en">Agent<\/span>\s*执行/);
+  assert.match(html, /把\s*<strong>决定权<\/strong>\s*留给人/);
   assert.match(html, /体验审批流程/);
   assert.match(html, /kaiwu\.event\/v1/);
   assert.match(html, /Adapter-ready/);
