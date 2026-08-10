@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\HarnessConnection;
 use App\Models\Quest;
+use App\Services\Harness\HarnessProtocolValidator;
 use App\Services\Quests\QuestWorkflow;
 use DomainException;
 use Illuminate\Filesystem\Filesystem;
@@ -93,6 +94,7 @@ class QuestWorkflowTest extends TestCase
         $this->assertSame('kaiwu.quest/v1', $payload['schema']);
         $this->assertSame('approved', $payload['approval']['status']);
         $this->assertSame(1, $payload['attempt']);
+        app(HarnessProtocolValidator::class)->validate($payload, HarnessProtocolValidator::QUEST_SCHEMA);
 
         $workflow->markFailed($first, 'Harness process exited');
         $second = $workflow->dispatch($quest->refresh(), $connection);

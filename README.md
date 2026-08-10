@@ -38,6 +38,7 @@
 - Quest 风险元数据、约束、验证方式和验收标准。
 - 人工批准门禁、版本化 Outbox 信封和追加式重试历史。
 - `harness:sync`、`quest:dispatch` 等 CLI 命令。
+- `kaiwu.event/v1`、`kaiwu.quest/v1` JSON Schema、公开一致性样例和只读验证命令。
 
 开物 v0.1 不执行任意 Shell 命令。Inbox 内容只被当作数据处理，不会被当作开物自身的执行指令。
 
@@ -68,6 +69,8 @@ php artisan serve
 ```bash
 php artisan harness:sync
 php artisan harness:sync codex-local
+php artisan harness:validate examples/conformance/valid/events.jsonl
+php artisan harness:validate examples/conformance/valid/quest.json
 php artisan quest:dispatch 12 codex-local
 ```
 
@@ -75,6 +78,9 @@ php artisan quest:dispatch 12 codex-local
 
 - [Harness Adapter 协议](docs/harness-adapter.md)
 - [Quest 协议](docs/quest-protocol.md)
+- [Event JSON Schema](schemas/kaiwu-event-v1.schema.json)
+- [Quest JSON Schema](schemas/kaiwu-quest-v1.schema.json)
+- [Adapter 一致性样例](examples/conformance)
 
 ### DeepSeek Harness（DSH）支持说明
 
@@ -95,7 +101,7 @@ php artisan quest:dispatch 12 codex-local
 
 ### 路线图
 
-1. Adapter 一致性测试夹具和 JSON Schema。
+1. ✅ Adapter 一致性测试样例、JSON Schema 和只读验证命令。
 2. Codex bridge 参考实现。
 3. DSH 公开协议可用后的 DSH Adapter。
 4. 结果确认和差异审查 UI。
@@ -144,6 +150,7 @@ The core does not pretend to know unreleased vendor APIs. Harness-specific behav
 - Atomic filesystem Outbox with `kaiwu.quest/v1` envelopes.
 - Append-only execution attempts for retry history.
 - CLI commands for synchronization and approved dispatch.
+- JSON Schema contracts, public conformance fixtures, and a read-only protocol validator.
 
 KAIWU does **not** execute arbitrary shell commands itself in v0.1. A Harness consumes approved Outbox messages and writes normalized events back to its Inbox. This keeps the coordinator small and prevents a web request from silently gaining machine-level execution authority.
 
@@ -189,6 +196,8 @@ Import events:
 ```bash
 php artisan harness:sync
 php artisan harness:sync codex-local
+php artisan harness:validate examples/conformance/valid/events.jsonl
+php artisan harness:validate examples/conformance/valid/quest.json
 ```
 
 Dispatch an already-approved Quest:
@@ -197,7 +206,7 @@ Dispatch an already-approved Quest:
 php artisan quest:dispatch 12 codex-local
 ```
 
-See [Harness adapter protocol](docs/harness-adapter.md) and [Quest protocol](docs/quest-protocol.md).
+See [Harness adapter protocol](docs/harness-adapter.md), [Quest protocol](docs/quest-protocol.md), the [Event schema](schemas/kaiwu-event-v1.schema.json), the [Quest schema](schemas/kaiwu-quest-v1.schema.json), and the public [conformance fixtures](examples/conformance).
 
 ## DeepSeek Harness
 
@@ -218,7 +227,7 @@ Read [SECURITY.md](SECURITY.md) before enabling bridges that can modify reposito
 
 This is an early open-source extraction from a private personal workflow application. Business-specific seed data, production paths, credentials, and deployment behavior have been removed. The immediate roadmap is:
 
-1. Adapter conformance fixtures and JSON Schema files.
+1. ✅ Adapter conformance fixtures, JSON Schema files, and a read-only validator.
 2. Codex bridge reference implementation.
 3. DSH adapter after the public contract is available.
 4. Result confirmation and diff review UI.

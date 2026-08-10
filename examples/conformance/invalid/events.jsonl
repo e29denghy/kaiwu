@@ -1,0 +1,2 @@
+{"id":"evt-missing-schema","type":"execution.completed","title":"Missing protocol marker","occurred_at":"2026-08-10T10:05:00+08:00"}
+{"schema":"kaiwu.event/v1","id":"evt-invalid-time","type":"execution.completed","title":"Invalid timestamp","occurred_at":"not-a-date"}

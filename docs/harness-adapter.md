@@ -2,6 +2,8 @@
 
 KAIWU isolates vendor-specific behavior at the filesystem boundary. A bridge can be a shell script, daemon, MCP server, plugin, or native Harness integration.
 
+The machine-readable contract is [schemas/kaiwu-event-v1.schema.json](../schemas/kaiwu-event-v1.schema.json). Public valid and invalid examples live in [examples/conformance](../examples/conformance) so adapter authors can run the same checks as KAIWU.
+
 ## Inbox
 
 The Inbox is append-only JSONL. Each non-empty line is one event:
@@ -22,7 +24,16 @@ The Inbox is append-only JSONL. Each non-empty line is one event:
 }
 ```
 
-Required fields are `id`, `type`, `title`, and `occurred_at`. KAIWU uses `(connection, id)` as the idempotency key. Unknown fields remain available in the stored payload.
+Required fields are `schema`, `id`, `type`, `title`, and `occurred_at`. KAIWU uses `(connection, id)` as the idempotency key. Unknown fields remain available in the stored payload.
+
+Validate an event Inbox without importing it:
+
+```bash
+php artisan harness:validate examples/conformance/valid/events.jsonl
+php artisan harness:validate /absolute/path/to/events.jsonl --schema=event
+```
+
+The command is read-only and returns a non-zero exit code when a line is malformed or violates the selected schema.
 
 Suggested event types:
 

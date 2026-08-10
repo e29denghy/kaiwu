@@ -1,0 +1,121 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/e29denghy/kaiwu/schemas/kaiwu-quest-v1.schema.json",
+    "title": "KAIWU Quest Envelope v1",
+    "description": "An immutable, human-approved Quest envelope written by KAIWU to a Harness Outbox.",
+    "type": "object",
+    "required": [
+        "schema",
+        "id",
+        "quest_id",
+        "attempt",
+        "title",
+        "goal",
+        "project",
+        "acceptance_criteria",
+        "constraints",
+        "verification",
+        "risk_level",
+        "requires_write",
+        "approval",
+        "created_at"
+    ],
+    "properties": {
+        "schema": {
+            "const": "kaiwu.quest/v1"
+        },
+        "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "quest_id": {
+            "type": "integer",
+            "minimum": 1
+        },
+        "attempt": {
+            "type": "integer",
+            "minimum": 1
+        },
+        "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+        },
+        "goal": {
+            "type": "string",
+            "minLength": 1
+        },
+        "project": {
+            "oneOf": [
+                {
+                    "type": "null"
+                },
+                {
+                    "type": "object",
+                    "required": ["id", "name", "slug"],
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "name": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "slug": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            ]
+        },
+        "acceptance_criteria": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "minLength": 1
+            }
+        },
+        "constraints": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "minLength": 1
+            }
+        },
+        "verification": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "minLength": 1
+            }
+        },
+        "risk_level": {
+            "enum": ["low", "medium", "high"]
+        },
+        "requires_write": {
+            "type": "boolean"
+        },
+        "approval": {
+            "type": "object",
+            "required": ["status", "approved_at"],
+            "properties": {
+                "status": {
+                    "const": "approved"
+                },
+                "approved_at": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "additionalProperties": false
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "additionalProperties": false
+}
