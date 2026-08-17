@@ -6,6 +6,7 @@ use App\Models\HarnessConnection;
 use App\Models\HarnessEvent;
 use App\Models\Project;
 use App\Services\Harness\Contracts\HarnessAdapter;
+use App\Services\Harness\HarnessExecutionProjector;
 use App\Services\Harness\HarnessProtocolValidator;
 use App\Services\Harness\HarnessSyncResult;
 use Illuminate\Support\Carbon;
@@ -15,7 +16,10 @@ use Throwable;
 
 class JsonlFileHarnessAdapter implements HarnessAdapter
 {
-    public function __construct(private readonly HarnessProtocolValidator $validator) {}
+    public function __construct(
+        private readonly HarnessProtocolValidator $validator,
+        private readonly HarnessExecutionProjector $executionProjector,
+    ) {}
 
     public function sync(HarnessConnection $connection): HarnessSyncResult
     {
@@ -61,12 +65,14 @@ class JsonlFileHarnessAdapter implements HarnessAdapter
                 ]);
 
                 if (! $isNew && ! $event->isDirty()) {
+                    $this->executionProjector->project($connection, $payload);
                     $skipped++;
 
                     continue;
                 }
 
                 $event->save();
+                $this->executionProjector->project($connection, $payload);
                 $isNew ? $created++ : $updated++;
             } catch (Throwable $exception) {
                 $errors[] = 'line '.($lineNumber + 1).': '.$exception->getMessage();

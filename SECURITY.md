@@ -13,3 +13,5 @@ Please use GitHub private vulnerability reporting when enabled. Do not open a pu
 KAIWU v0.1 is local-first and does not include authentication. Bind the development server to localhost only. Add authentication, authorization, CSRF review, encrypted secret storage, and an explicit network threat model before any shared or internet-facing deployment.
 
 Harness bridges should run with the least filesystem and network permission possible. KAIWU's approval record does not replace the receiving Harness's sandbox or external-write confirmation.
+
+The DeepSeek Harness Preview bridge must remain a separately supervised process. It maps read-only Quests to `read-only` and write-capable Quests to `workspace-write`. SDK mode's pinned Cordis composition sets approval policy to `never`; npm CLI mode uses DSH's headless profile without an interactive answerer. Both fail closed on unattended escalation. Do not replace either path with `danger-full-access`, expose the bridge through an HTTP controller, or store `DEEPSEEK_API_KEY` in KAIWU connection JSON or Quest text.

@@ -3,6 +3,7 @@
 .env
 .env.backup
 .env.production
+.venv/
 .phpactor.json
 .phpunit.result.cache
 /.codex
@@ -16,10 +17,12 @@
 /database/*.sqlite
 /database/*.sqlite-*
 /node_modules
+/bridges/deepseek-harness/node_modules/
 /public/build
 /public/fonts-manifest.dev.json
 /public/hot
 /.kaiwu/
+/.dsh-sessions/
 /public/storage
 /storage/*.key
 /storage/pail

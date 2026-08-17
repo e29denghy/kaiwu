@@ -3,7 +3,7 @@
     "name": "e29denghy/kaiwu",
     "type": "project",
     "description": "开物 KAIWU — a local-first, human-approved workbench for coordinating multiple agent harnesses.",
-    "keywords": ["agent", "harness", "codex", "workflow", "laravel", "inertia", "vue"],
+    "keywords": ["agent", "harness", "codex", "deepseek", "dsh", "workflow", "laravel", "inertia", "vue"],
     "license": "Apache-2.0",
     "require": {
         "php": "^8.4",

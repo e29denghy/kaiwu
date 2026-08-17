@@ -33,7 +33,7 @@ class HarnessConnectionController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
-            'driver' => ['required', 'in:jsonl'],
+            'driver' => ['required', 'in:jsonl,deepseek'],
             'inbox_path' => ['required', 'string', 'max:2048'],
             'outbox_path' => ['required', 'string', 'max:2048'],
         ]);

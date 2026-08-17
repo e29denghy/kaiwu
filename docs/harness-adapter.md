@@ -61,3 +61,11 @@ KAIWU writes both files atomically. A bridge should claim a queued dispatch with
 ## Adapter rule
 
 An adapter translates; it does not weaken approval. A vendor-specific adapter must not dispatch a Quest unless the envelope contains `approval.status = approved` and a non-null `approved_at`.
+
+## DeepSeek Harness Preview bridge
+
+KAIWU ships a process-separated bridge under [`bridges/deepseek-harness`](../bridges/deepseek-harness). It pins the official Python SDK `0.1.0rc6` and npm headless CLI `0.1.0-rc.6`, translates each approved Quest into one DSH task, and translates the selected automation transport's lifecycle/results back into the event contract above. Auto mode uses SDK JSON-RPC on Linux and the npm CLI on macOS because the published rc6 macOS arm64 SDK wheel omits the `node-pty` native file required by its default runtime.
+
+The bridge maps `requires_write=false` to DSH `read-only` and write-capable Quests to `workspace-write`. SDK mode's Cordis composition uses sandboxed Bash and filesystem providers with approval policy `never`; CLI mode's shipped headless profile has no interactive approval answerer. Both fail closed on unattended permission escalation. KAIWU imports the resulting events separately and projects recognized `execution.started`, `execution.completed`, `execution.failed`, and `execution.cancelled` events onto the matching `QuestExecution` by `payload.dispatch_id`.
+
+DeepSeek labels DSH Developer Preview and warns of breaking changes. The KAIWU Event/Quest contracts remain the stable boundary; the SDK pin is an explicitly versioned preview transport.
