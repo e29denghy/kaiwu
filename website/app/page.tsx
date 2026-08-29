@@ -326,13 +326,13 @@ export default function Home() {
       <section className="dsh-section">
         <div className="dsh-label">DSH</div>
         <div>
-          <p className="kicker">HONEST INTEGRATION / 真实边界</p>
-          <h2>Adapter-ready，不等于已经原生支持。</h2>
+          <p className="kicker">SDK PREVIEW ADAPTER / 预览适配</p>
+          <h2>已经可运行，仍然必须固定版本。</h2>
           <p>
-            DeepSeek Harness 当前被明确描述为未来 Adapter 目标。等 DSH 发布稳定公共协议后，只需把它转换到 KAIWU 的 Event 与 Quest 合同，无需重写项目、审批或审计模型。
+            开物已接入固定 rc6 的官方 DeepSeek Harness SDK / headless CLI：已批准 Quest 通过独立 bridge 进入 DSH，结果回写为 Event。DSH 仍处于 Developer Preview，因此这是可测试的预览兼容，不是稳定性承诺。
           </p>
         </div>
-        <span className="future-badge">FUTURE ADAPTER</span>
+        <span className="future-badge">RC6 PINNED</span>
       </section>
 
       <section className="section roadmap-section" id="roadmap">
@@ -349,8 +349,16 @@ export default function Home() {
             </div>
             <b>DONE</b>
           </li>
-          <li>
+          <li className="complete">
             <span>02</span>
+            <div>
+              <strong>DSH Preview Adapter</strong>
+              <small>Official SDK / CLI 0.1.0-rc.6</small>
+            </div>
+            <b>DONE</b>
+          </li>
+          <li>
+            <span>03</span>
             <div>
               <strong>结果确认与差异审查</strong>
               <small>Human review before completion</small>
@@ -358,20 +366,12 @@ export default function Home() {
             <b>NEXT</b>
           </li>
           <li>
-            <span>03</span>
+            <span>04</span>
             <div>
               <strong>Codex Bridge 参考实现</strong>
               <small>Outbox → Codex → Inbox</small>
             </div>
             <b>PLANNED</b>
-          </li>
-          <li>
-            <span>04</span>
-            <div>
-              <strong>DSH Adapter</strong>
-              <small>After stable public contracts</small>
-            </div>
-            <b>WAITING</b>
           </li>
         </ol>
       </section>

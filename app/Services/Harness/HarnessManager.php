@@ -12,7 +12,7 @@ class HarnessManager
     public function adapterFor(HarnessConnection $connection): HarnessAdapter
     {
         return match ($connection->driver) {
-            'jsonl' => app(JsonlFileHarnessAdapter::class),
+            'jsonl', 'deepseek' => app(JsonlFileHarnessAdapter::class),
             default => throw new InvalidArgumentException(
                 "不支持 Harness driver：{$connection->driver}",
             ),

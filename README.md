@@ -29,7 +29,7 @@
 
 写入型 Quest 没有人工批准就不能派发；重试会产生新的执行尝试，不会覆盖历史记录。
 
-### v0.1 已包含
+### 当前源码已包含
 
 - Laravel 13 + Inertia 3 + Vue 3 本地工作台。
 - Workspace、项目、模块、任务、步骤、提醒和每日聚焦。
@@ -39,8 +39,10 @@
 - 人工批准门禁、版本化 Outbox 信封和追加式重试历史。
 - `harness:sync`、`quest:dispatch` 等 CLI 命令。
 - `kaiwu.event/v1`、`kaiwu.quest/v1` JSON Schema、公开一致性样例和只读验证命令。
+- 固定官方 Python SDK `0.1.0rc6` 与 npm headless CLI `0.1.0-rc.6` 的 DeepSeek Harness Developer Preview bridge。
+- DSH `read-only` / `workspace-write` 沙箱映射、非交互权限扩大拒绝与执行状态回写。
 
-开物 v0.1 不执行任意 Shell 命令。Inbox 内容只被当作数据处理，不会被当作开物自身的执行指令。
+开物 Web 应用本身不执行任意 Shell 命令。Inbox 内容只被当作数据处理，不会被当作开物自身的执行指令；DSH bridge 是由操作者独立启动的进程。
 
 ### 快速开始
 
@@ -61,10 +63,12 @@ php artisan serve
 
 ### Harness 连接
 
-当前使用 `jsonl` 驱动：
+当前支持通用 `jsonl` 和 `deepseek` 驱动：
 
 - `inbox_path`：Harness 或桥接程序写入的追加式 JSONL 文件。
 - `outbox_path`：开物写入已批准 Quest 信封的目录。
+
+`deepseek` 驱动仍以同一份 JSONL Inbox/Outbox 作为稳定的开物边界，外部 bridge 负责调用 DSH SDK 或 headless CLI。这能保证 Web 应用不直接获得 Shell 权限。
 
 ```bash
 php artisan harness:sync
@@ -81,14 +85,15 @@ php artisan quest:dispatch 12 codex-local
 - [Event JSON Schema](schemas/kaiwu-event-v1.schema.json)
 - [Quest JSON Schema](schemas/kaiwu-quest-v1.schema.json)
 - [Adapter 一致性样例](examples/conformance)
+- [DeepSeek Harness bridge](bridges/deepseek-harness)
 
-### DeepSeek Harness（DSH）支持说明
+### DeepSeek Harness（DSH）Developer Preview 适配
 
-当前 README 没有声称“开物已经原生支持 DSH”。原因是 DSH 的公开事件格式和执行接口还没有作为稳定公共协议接入开物。
+DeepSeek 已发布 `deepseek-ai/deepseek-harness`、npm CLI 和 Python SDK。开物现在包含可运行的外部 DSH bridge：它消费已批准的 `kaiwu.quest/v1` Outbox，通过固定 rc6 的官方自动化入口执行，再把启动、完成或失败结果写为 `kaiwu.event/v1` Inbox 事件。Linux 自动选择 Python SDK JSON-RPC，macOS 自动选择 npm headless CLI，因为已发布 rc6 macOS arm64 SDK wheel 缺少默认运行时必需的 `node-pty` 原生文件。
 
-开物现在提供的是通用接入边界：Harness 将执行状态、结果和错误写成 `kaiwu.event/v1` 事件进入 Inbox；开物将人工批准后的 Quest 写成 `kaiwu.quest/v1` 信封进入 Outbox。等 DSH 公开稳定协议后，只需增加一个 DSH Adapter，把 DSH 格式转换成这两种开物格式，开物的项目、人工审批和审计模型都不需要重写。
+这是已实现、可测试的 Preview Adapter，但不是稳定性承诺：DeepSeek 官方仍将 DSH 标记为 Developer Preview，并明确预告会有破坏兼容性的变更。因此 bridge 固定 rc6，后续升级必须先重跑 bridge 单测、开物协议一致性测试和实际沙箱验证。
 
-换句话说，这是“架构已经预留好接入位置”，不是“当前已经完成 DSH 原生兼容”。
+详细安装、命令、权限和恢复规则见 [DeepSeek Harness bridge 指南](bridges/deepseek-harness/README.md)。
 
 ### 安全边界
 
@@ -102,8 +107,8 @@ php artisan quest:dispatch 12 codex-local
 ### 路线图
 
 1. ✅ Adapter 一致性测试样例、JSON Schema 和只读验证命令。
-2. Codex bridge 参考实现。
-3. DSH 公开协议可用后的 DSH Adapter。
+2. ✅ DSH Python SDK Developer Preview Adapter。
+3. Codex bridge 参考实现。
 4. 结果确认和差异审查 UI。
 5. 认证与多用户审批策略。
 
@@ -136,9 +141,9 @@ flowchart LR
     G --> H["KAIWU audit timeline"]
 ```
 
-The core does not pretend to know unreleased vendor APIs. Harness-specific behavior lives behind adapters; the stable boundary is the versioned Inbox/Outbox protocol.
+Harness-specific behavior lives behind versioned adapters; the stable KAIWU boundary remains the versioned Inbox/Outbox protocol even when a vendor transport is still in preview.
 
-## Included in v0.1
+## Included in the current source
 
 - Laravel 13 + Inertia 3 + Vue 3 local workbench.
 - Workspaces, projects, modules, tasks, steps, reminders, and daily focus.
@@ -151,8 +156,10 @@ The core does not pretend to know unreleased vendor APIs. Harness-specific behav
 - Append-only execution attempts for retry history.
 - CLI commands for synchronization and approved dispatch.
 - JSON Schema contracts, public conformance fixtures, and a read-only protocol validator.
+- A runnable DeepSeek Harness Developer Preview bridge pinned to the official Python SDK `0.1.0rc6` and npm headless CLI `0.1.0-rc.6`.
+- DSH read-only/workspace-write sandbox mapping, unattended escalation rejection, and execution-state projection.
 
-KAIWU does **not** execute arbitrary shell commands itself in v0.1. A Harness consumes approved Outbox messages and writes normalized events back to its Inbox. This keeps the coordinator small and prevents a web request from silently gaining machine-level execution authority.
+The KAIWU web application does **not** execute arbitrary shell commands itself. A separately supervised Harness bridge consumes approved Outbox messages and writes normalized events back to its Inbox. This keeps the coordinator small and prevents a web request from silently gaining machine-level execution authority.
 
 ## Requirements
 
@@ -186,10 +193,12 @@ composer run dev
 
 ## Harness connection
 
-Each connection currently uses the `jsonl` driver:
+Connections can use the generic `jsonl` driver or the `deepseek` driver:
 
 - `inbox_path`: an append-only JSONL file written by a Harness or bridge.
 - `outbox_path`: a directory where KAIWU writes approved Quest envelopes.
+
+The `deepseek` driver keeps KAIWU's JSONL Inbox/Outbox as the stable application boundary. The external bridge owns the DSH SDK process, so the web application never gains direct shell authority.
 
 Import events:
 
@@ -206,11 +215,13 @@ Dispatch an already-approved Quest:
 php artisan quest:dispatch 12 codex-local
 ```
 
-See [Harness adapter protocol](docs/harness-adapter.md), [Quest protocol](docs/quest-protocol.md), the [Event schema](schemas/kaiwu-event-v1.schema.json), the [Quest schema](schemas/kaiwu-quest-v1.schema.json), and the public [conformance fixtures](examples/conformance).
+See [Harness adapter protocol](docs/harness-adapter.md), [Quest protocol](docs/quest-protocol.md), the [DeepSeek Harness bridge](bridges/deepseek-harness), the [Event schema](schemas/kaiwu-event-v1.schema.json), the [Quest schema](schemas/kaiwu-quest-v1.schema.json), and the public [conformance fixtures](examples/conformance).
 
-## DeepSeek Harness
+## DeepSeek Harness Developer Preview adapter
 
-KAIWU does not currently claim a completed native DeepSeek Harness integration. DSH's public event and execution contracts are not yet connected as a stable public contract. KAIWU already provides the generic boundary: Harnesses write execution states, results, and errors to `kaiwu.event/v1`, while KAIWU writes human-approved Quests to `kaiwu.quest/v1`. Once DSH publishes a stable contract, a DSH adapter can translate between DSH and these two KAIWU formats without changing KAIWU's project, approval, or audit models. This is architectural readiness, not current native DSH compatibility.
+DeepSeek has published `deepseek-ai/deepseek-harness`, its npm CLI, and a Python SDK. KAIWU now ships a runnable external bridge that consumes approved `kaiwu.quest/v1` Outbox envelopes through pinned rc6 official automation transports and writes started, completed, or failed `kaiwu.event/v1` events back to the Inbox. Auto mode selects Python SDK JSON-RPC on Linux and the npm headless CLI on macOS because the published rc6 macOS arm64 SDK wheel is missing the `node-pty` native file required by its default runtime.
+
+This is implemented and tested preview compatibility, not a stability promise or an in-process native plugin. DeepSeek still labels DSH Developer Preview and explicitly warns of compatibility-breaking changes. The bridge therefore pins rc6; upgrades must pass the bridge tests, KAIWU conformance suite, and sandbox verification before the pin moves.
 
 ## Security model
 
@@ -228,8 +239,8 @@ Read [SECURITY.md](SECURITY.md) before enabling bridges that can modify reposito
 This is an early open-source extraction from a private personal workflow application. Business-specific seed data, production paths, credentials, and deployment behavior have been removed. The immediate roadmap is:
 
 1. ✅ Adapter conformance fixtures, JSON Schema files, and a read-only validator.
-2. Codex bridge reference implementation.
-3. DSH adapter after the public contract is available.
+2. ✅ DSH rc6 Developer Preview adapter.
+3. Codex bridge reference implementation.
 4. Result confirmation and diff review UI.
 5. Authentication and multi-user approval policies.
 

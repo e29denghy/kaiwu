@@ -33,8 +33,9 @@ const formatDate = (value) => value
         <div class="grid gap-6 xl:grid-cols-[22rem_minmax(0,1fr)]">
             <form class="h-fit rounded-lg border border-slate-200 bg-white p-5" @submit.prevent="createConnection">
                 <h2 class="font-semibold text-slate-950">连接一个 Harness</h2>
-                <p class="mt-1 text-sm leading-6 text-slate-500">JSONL Inbox 用于回流事件，Outbox 只接收已批准 Quest。</p>
+                <p class="mt-1 text-sm leading-6 text-slate-500">JSONL Inbox 用于回流事件，Outbox 只接收已批准 Quest。DeepSeek 驱动由独立 bridge 调用固定版本的官方 SDK 或 headless CLI。</p>
                 <label class="mt-4 block text-sm font-medium">名称<input v-model="form.name" required class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" placeholder="Codex Local" /></label>
+                <label class="mt-3 block text-sm font-medium">驱动<select v-model="form.driver" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2"><option value="jsonl">通用 JSONL</option><option value="deepseek">DeepSeek Harness Preview</option></select></label>
                 <label class="mt-3 block text-sm font-medium">Inbox JSONL<input v-model="form.inbox_path" required class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" placeholder="/absolute/path/events.jsonl" /></label>
                 <label class="mt-3 block text-sm font-medium">Quest Outbox<input v-model="form.outbox_path" required class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" placeholder="/absolute/path/outbox" /></label>
                 <button :disabled="form.processing" class="mt-4 rounded-md bg-teal-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">创建连接</button>
