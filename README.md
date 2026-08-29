@@ -39,7 +39,7 @@
 - 人工批准门禁、版本化 Outbox 信封和追加式重试历史。
 - `harness:sync`、`quest:dispatch` 等 CLI 命令。
 - `kaiwu.event/v1`、`kaiwu.quest/v1` JSON Schema、公开一致性样例和只读验证命令。
-- 固定官方 Python SDK `0.1.0rc6` 与 npm headless CLI `0.1.0-rc.6` 的 DeepSeek Harness Developer Preview bridge。
+- 固定最新可安装 npm headless CLI `0.1.1-rc.2`、并对 Python SDK `0.1.1rc1` 保留显式兼容诊断的 DeepSeek Harness Developer Preview bridge。
 - DSH `read-only` / `workspace-write` 沙箱映射、非交互权限扩大拒绝与执行状态回写。
 
 开物 Web 应用本身不执行任意 Shell 命令。Inbox 内容只被当作数据处理，不会被当作开物自身的执行指令；DSH bridge 是由操作者独立启动的进程。
@@ -89,9 +89,9 @@ php artisan quest:dispatch 12 codex-local
 
 ### DeepSeek Harness（DSH）Developer Preview 适配
 
-DeepSeek 已发布 `deepseek-ai/deepseek-harness`、npm CLI 和 Python SDK。开物现在包含可运行的外部 DSH bridge：它消费已批准的 `kaiwu.quest/v1` Outbox，通过固定 rc6 的官方自动化入口执行，再把启动、完成或失败结果写为 `kaiwu.event/v1` Inbox 事件。Linux 自动选择 Python SDK JSON-RPC，macOS 自动选择 npm headless CLI，因为已发布 rc6 macOS arm64 SDK wheel 缺少默认运行时必需的 `node-pty` 原生文件。
+DeepSeek 已发布 `deepseek-ai/deepseek-harness`、npm CLI 和 Python SDK。开物现在包含可运行的外部 DSH bridge：它消费已批准的 `kaiwu.quest/v1` Outbox，通过固定 `0.1.1-rc.2` 的官方 npm headless CLI 执行，再把启动、完成或失败结果写为 `kaiwu.event/v1` Inbox 事件。自动模式在所有平台使用 CLI；Python SDK `0.1.1rc1` 仅保留显式兼容诊断，因为其实测 macOS runtime 无法加载开物安全组合所需的 Bash 沙箱插件。
 
-这是已实现、可测试的 Preview Adapter，但不是稳定性承诺：DeepSeek 官方仍将 DSH 标记为 Developer Preview，并明确预告会有破坏兼容性的变更。因此 bridge 固定 rc6，后续升级必须先重跑 bridge 单测、开物协议一致性测试和实际沙箱验证。
+这是已实现、可测试的 Preview Adapter，但不是稳定性承诺：DeepSeek 官方仍将 DSH 标记为 Developer Preview，并明确预告会有破坏兼容性的变更。GitHub 上更新的 `0.1.2-alpha.1` 目前没有对应 npm/PyPI 安装包，因此不是可复现的部署目标；后续升级仍必须先重跑 bridge 单测、开物协议一致性测试和实际沙箱验证。
 
 详细安装、命令、权限和恢复规则见 [DeepSeek Harness bridge 指南](bridges/deepseek-harness/README.md)。
 
@@ -156,7 +156,7 @@ Harness-specific behavior lives behind versioned adapters; the stable KAIWU boun
 - Append-only execution attempts for retry history.
 - CLI commands for synchronization and approved dispatch.
 - JSON Schema contracts, public conformance fixtures, and a read-only protocol validator.
-- A runnable DeepSeek Harness Developer Preview bridge pinned to the official Python SDK `0.1.0rc6` and npm headless CLI `0.1.0-rc.6`.
+- A runnable DeepSeek Harness Developer Preview bridge pinned to the latest installable npm headless CLI `0.1.1-rc.2`, with an explicit Python SDK `0.1.1rc1` compatibility diagnostic.
 - DSH read-only/workspace-write sandbox mapping, unattended escalation rejection, and execution-state projection.
 
 The KAIWU web application does **not** execute arbitrary shell commands itself. A separately supervised Harness bridge consumes approved Outbox messages and writes normalized events back to its Inbox. This keeps the coordinator small and prevents a web request from silently gaining machine-level execution authority.
@@ -219,9 +219,9 @@ See [Harness adapter protocol](docs/harness-adapter.md), [Quest protocol](docs/q
 
 ## DeepSeek Harness Developer Preview adapter
 
-DeepSeek has published `deepseek-ai/deepseek-harness`, its npm CLI, and a Python SDK. KAIWU now ships a runnable external bridge that consumes approved `kaiwu.quest/v1` Outbox envelopes through pinned rc6 official automation transports and writes started, completed, or failed `kaiwu.event/v1` events back to the Inbox. Auto mode selects Python SDK JSON-RPC on Linux and the npm headless CLI on macOS because the published rc6 macOS arm64 SDK wheel is missing the `node-pty` native file required by its default runtime.
+DeepSeek has published `deepseek-ai/deepseek-harness`, its npm CLI, and a Python SDK. KAIWU now ships a runnable external bridge that consumes approved `kaiwu.quest/v1` Outbox envelopes through the pinned `0.1.1-rc.2` npm headless CLI and writes started, completed, or failed `kaiwu.event/v1` events back to the Inbox. Auto mode selects the CLI on every platform. Python SDK `0.1.1rc1` remains an explicit compatibility diagnostic because its tested macOS runtime cannot load the Bash sandbox plugin required by KAIWU's safety composition.
 
-This is implemented and tested preview compatibility, not a stability promise or an in-process native plugin. DeepSeek still labels DSH Developer Preview and explicitly warns of compatibility-breaking changes. The bridge therefore pins rc6; upgrades must pass the bridge tests, KAIWU conformance suite, and sandbox verification before the pin moves.
+This is implemented and tested preview compatibility, not a stability promise or an in-process native plugin. DeepSeek still labels DSH Developer Preview and explicitly warns of compatibility-breaking changes. The newer GitHub tag `0.1.2-alpha.1` currently has no matching npm or PyPI package, so it is not a reproducible deployment target. Future pin changes must pass the bridge tests, KAIWU conformance suite, and sandbox verification.
 
 ## Security model
 
@@ -239,7 +239,7 @@ Read [SECURITY.md](SECURITY.md) before enabling bridges that can modify reposito
 This is an early open-source extraction from a private personal workflow application. Business-specific seed data, production paths, credentials, and deployment behavior have been removed. The immediate roadmap is:
 
 1. ✅ Adapter conformance fixtures, JSON Schema files, and a read-only validator.
-2. ✅ DSH rc6 Developer Preview adapter.
+2. ✅ DSH `0.1.1-rc.2` Developer Preview adapter.
 3. Codex bridge reference implementation.
 4. Result confirmation and diff review UI.
 5. Authentication and multi-user approval policies.

@@ -16,9 +16,9 @@ from pathlib import Path
 from typing import Any, Protocol
 
 
-ADAPTER_VERSION = "0.1.0"
-DSH_RELEASE = "0.1.0-rc.6"
-SDK_VERSION = "0.1.0rc6"
+ADAPTER_VERSION = "0.2.0"
+DSH_RELEASE = "0.1.1-rc.2"
+SDK_VERSION = "0.1.1rc1"
 SUCCESS_FINISH_REASONS = {"completed", "max-tokens"}
 
 
@@ -146,11 +146,11 @@ class DeepSeekCliRunner:
 
 
 def select_runner(config: BridgeConfig) -> HarnessRunner:
-    """Choose one explicit transport; auto avoids the broken rc6 macOS SDK wheel."""
+    """Choose a transport; auto uses the latest sandbox-capable npm release."""
 
     transport = config.transport
     if transport == "auto":
-        transport = "cli" if sys.platform == "darwin" else "sdk"
+        transport = "cli"
     if transport == "sdk":
         return DeepSeekSdkRunner(config)
     if transport != "cli":

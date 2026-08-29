@@ -1,5 +1,7 @@
-# KAIWU's unattended DeepSeek Harness SDK composition.
-# It keeps stdout protocol-pure and fails closed on any permission escalation.
+# KAIWU's explicit DeepSeek Harness SDK compatibility composition.
+# The 0.1.1rc1 macOS wheel cannot load its sandbox plugins, so auto mode uses
+# the npm CLI. This file keeps explicit SDK probes fail-closed rather than
+# weakening the KAIWU permission boundary.
 
 - id: sdk-jsonrpc-server
   name: '@deepseek-ai/dsh-sdk-jsonrpc-server'
