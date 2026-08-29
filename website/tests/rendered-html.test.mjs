@@ -59,11 +59,22 @@ test("ships project metadata and removes starter preview artifacts", async () =>
   assert.match(page, /useState<DemoStep>/);
   assert.match(layout, /generateMetadata/);
   assert.match(packageJson, /"name": "kaiwu-site"/);
+  assert.match(packageJson, /"export:static"/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
 
   await Promise.all([
     assert.rejects(access(new URL("../app/_sites-preview", import.meta.url))),
     access(new URL("../public/og.png", import.meta.url)),
     access(new URL("../.openai/hosting.json", import.meta.url)),
+    access(new URL("../scripts/export-static.mjs", import.meta.url)),
+    access(
+      new URL(
+        "../deploy/nginx/kaiwu.denghy.cn.bootstrap.conf",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL("../deploy/nginx/kaiwu.denghy.cn.conf", import.meta.url),
+    ),
   ]);
 });
