@@ -329,10 +329,10 @@ export default function Home() {
           <p className="kicker">SDK PREVIEW ADAPTER / 预览适配</p>
           <h2>已经可运行，仍然必须固定版本。</h2>
           <p>
-            开物已接入固定 rc6 的官方 DeepSeek Harness SDK / headless CLI：已批准 Quest 通过独立 bridge 进入 DSH，结果回写为 Event。DSH 仍处于 Developer Preview，因此这是可测试的预览兼容，不是稳定性承诺。
+            开物已接入最新可安装的官方 DeepSeek Harness headless CLI 0.1.1-rc.2：已批准 Quest 通过独立 bridge 进入 DSH，结果回写为 Event。DSH 仍处于 Developer Preview，因此这是可测试的预览兼容，不是稳定性承诺。
           </p>
         </div>
-        <span className="future-badge">RC6 PINNED</span>
+        <span className="future-badge">RC.2 PINNED</span>
       </section>
 
       <section className="section roadmap-section" id="roadmap">
@@ -353,7 +353,7 @@ export default function Home() {
             <span>02</span>
             <div>
               <strong>DSH Preview Adapter</strong>
-              <small>Official SDK / CLI 0.1.0-rc.6</small>
+              <small>Official CLI 0.1.1-rc.2</small>
             </div>
             <b>DONE</b>
           </li>

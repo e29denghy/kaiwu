@@ -181,6 +181,16 @@ class DeepSeekHarnessBridgeTest(unittest.TestCase):
             result.final_response,
         )
 
+    def test_auto_transport_uses_the_sandboxed_cli(self) -> None:
+        executable = self.root / "fake-dsh"
+        executable.write_text("#!/bin/sh\nprintf ok", encoding="utf-8")
+        executable.chmod(0o755)
+
+        runner = select_runner(replace(self.config, dsh_bin=executable))
+
+        self.assertEqual("npm-headless-cli", runner.transport)
+        self.assertEqual(executable.resolve(), runner.executable)
+
     def test_missing_dispatch_id_is_rejected_without_creating_a_directory(self) -> None:
         dispatch_id = str(uuid.uuid4())
         missing = self.outbox / dispatch_id

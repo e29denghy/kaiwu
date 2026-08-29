@@ -43,7 +43,7 @@ test("server-renders the KAIWU bilingual landing page", async () => {
   assert.match(html, /体验审批流程/);
   assert.match(html, /kaiwu\.event\/v1/);
   assert.match(html, /SDK PREVIEW ADAPTER/);
-  assert.match(html, /0\.1\.0-rc\.6/);
+  assert.match(html, /0\.1\.1-rc\.2/);
   assert.match(html, /https:\/\/kaiwu\.example\/og\.png/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
